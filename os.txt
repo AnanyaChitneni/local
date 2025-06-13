@@ -1,6 +1,6 @@
 //week1 fcfs without arrival time
 #include <stdio.h>
-
+jk
 void fcfs_no_arrival(int p[], int n, int bt[]) {
 int wt[n], tat[n], ct[n];
 wt[0] = 0;
