@@ -1,0 +1,134 @@
+//mvt
+
+#include <stdio.h>
+
+void mvt(int tm, int om) {
+
+int rm = tm - om, p = 1, size;
+
+printf("\nTotal: %d | OS: %d | Available: %d\n", tm, om, rm);
+
+printf("P\tSize\t Status\t Remaining Memory\n");
+
+while (1) {
+
+printf("P%d: ", p);
+
+scanf("%d", &size);
+
+if (size <= rm) {
+
+printf("P%d\t%-10d\t%-10s\t%d\n", p, size, "Allocated", rm - size);
+
+rm -= size;
+
+} else {
+
+printf("P%d\t%-10d\t%-10s\t%d\n", p, size, "Not Enough", rm);
+
+break;
+
+}
+
+p++;
+
+}
+
+printf("\nInternal Fragmentation: 0\n");
+
+printf("External Fragmentation: %d\n", rm);
+
+}
+
+int main() {
+
+int tm, om;
+
+printf("Enter total memory & OS memory: ");
+
+scanf("%d %d", &tm, &om);
+
+mvt(tm, om);
+
+return 0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//mft
+
+#include <stdio.h>
+
+int main() {
+
+int TM, OM, RM, BS, B, i, ps[10], rem[10];
+
+int int_frag = 0, ext_frag, new_process_count = 0;
+
+printf("Enter Total Memory and OS Memory: ");
+
+scanf("%d %d", &TM, &OM);
+
+RM = TM - OM;
+
+printf("Remaining Memory: %d\n", RM);
+
+printf("Enter block size: ");
+
+scanf("%d", &BS);
+
+B = RM / BS;
+
+ext_frag = RM - (B * BS);
+
+printf("Number of blocks: %d\n", B);
+
+printf("External Fragmentation: %d\n", ext_frag);
+
+for (i = 0; i < B; i++) {
+
+printf("Enter Process Size for P%d: ", i + 1);
+
+scanf("%d", &ps[i]);
+
+}
+
+for (i = 0; i < B; i++) {
+
+if (ps[i] > BS) {
+
+printf("P%d is blocked. Enter size for new process P%d: ", i + 1, B + new_process_count + 1);
+
+scanf("%d", &ps[i]);
+
+new_process_count++;
+
+}
+
+rem[i] = BS - ps[i];
+
+int_frag += rem[i];
+
+}
+
+printf("\nInternal Fragmentation: %d\n", int_frag);
+
+return 0;
+
+}
