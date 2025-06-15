@@ -1,0 +1,124 @@
+web.xml
+<web-app>
+</web-app>
+
+
+
+
+
+addcookies.jsp
+<%@ page language="java"%>
+
+<html>
+<body>
+
+<%
+	String  fname = request.getParameter("n1");
+	String  lname = request.getParameter("n2");
+		
+	Cookie  ck1 = new  Cookie("firstname", fname);
+	Cookie  ck2 = new  Cookie("lastname", lname);
+	
+	ck1.setMaxAge(24*60*60*1000);
+	ck2.setMaxAge(24*60*60*1000);
+
+	response.addCookie(ck1);
+	response.addCookie(ck2);
+%>
+
+<form   action='getcookies.jsp'> 
+<input   type='submit'   value='List Cookies'>
+</form>
+
+</body>
+</html>
+
+
+
+
+
+getcookies.jsp
+<%@ page language="java"%>
+
+<%
+    Cookie[]   ck = request.getCookies();
+    
+     for(int i=0; i<ck.length; i++)
+      {
+        out.println(ck[i].getName()  +  "--->"  + ck[i].getValue() + "<br>");
+	out.println();
+      }
+%>
+
+
+
+
+
+
+index.html
+<html>
+<body>
+<form  action="addcookies.jsp">
+Enter first name <input  type="text"  name="n1" ><br><br>
+Enter last name <input  type="text"  name="n2" ><br><br>
+<input  type="submit"  value="Go">
+</form>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+b)
+web.xml
+<web-app>
+</web-app>
+
+
+
+
+
+ex2.jsp
+<%@ page  language="java"%>
+<html>
+<body>
+<%
+    String  name=request.getParameter("t1");
+    int  age=Integer.parseInt(request.getParameter("t2"));
+    if(age<18)
+      out.println("Sorry you are not an authorized user to visit the site");
+    else 
+      out.println("Welcome, "+ name); 
+%>
+</body>
+</html>
+
+
+
+
+
+
+
+ex2.html
+<!DOCTYPE html>
+<html>
+<body>
+<form action="ex2.jsp">
+    Enter Your Name: <input   type="text"   name="t1"/>  <br>
+    Enter Your Age: <input   type="text"   name="t2"/>
+ 
+<br>
+    <input  type="submit"/>
+</form>
+</body>
+</html>
