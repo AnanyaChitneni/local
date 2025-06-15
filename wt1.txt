@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>num to words</title>
+		<script>
+
+        var a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
+
+        var b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+				
+        function inWords() 
+        {
+        var number=document.getElementById('number').value
+        var num=parseInt(number);		
+        var s=number.split("");
+
+                            //console.log(typeof(s.length));
+        if (isNaN(number))
+            document.getElementById('result').value= 'not a number' ;
+        else if (num<0 || num>999)
+            document.getElementById('result').value= 'out of range'; 
+        else{
+            var str = '';
+        switch(s.length)
+            {
+          	 case 1:
+						if(s[0]==0)
+									str='zero';
+								else
+									str= a[s[0]]; 
+								break;
+				
+         	case 2:
+								if(s[0]==1)
+									str= a[num]; 
+								else
+									str= b[s[0]]+' '+a[s[1]]; 
+						break;
+			
+
+    			case 3:
+								if(s[1]==1)
+									str= a[s[0]]+' hundred '+a[parseInt(num%100)]; 
+								else
+									str= a[s[0]]+'hundred '+b[s[1]]+' '+a[s[2]]; 
+						break;
+					}
+					document.getElementById('result').value = str;
+				}
+				}
+			
+		</script>
+	</head>
+	
+  <body>
+		<input id="number" type="text" />	<br><br>
+		<input id="result" type="text" /><br><br>
+		<input type="button" value="Click" onclick="inWords();">
+		<br>
+	</body>
+
+</html>
+
+
+
+
+
+
