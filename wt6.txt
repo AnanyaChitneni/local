@@ -1,0 +1,175 @@
+form.html
+<html>
+  <head>
+    <title> User Validation</title>
+  </head>
+  <body>
+    <form action="Validate" method="POST">
+       Enter Username: <input type="text" name="username"><br>
+       Enter Password: <input type="password" name="password"><br>
+       <input type="submit" value="Validate">
+    </form>
+  </body>
+</html>
+
+
+Validate.java
+import java.io.*;
+import java.sql.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class Validate extends HttpServlet
+{
+  protected void doPost(HttpServletRequest request,HttpServletResponse response)throws ServletException,IOException
+  {
+     PrintWriter out = response.getWriter();
+
+     Connection con;
+     PreparedStatement pst;
+     ResultSet rs;
+   
+     String user = request.getParameter("username");
+     String word = request.getParameter("password");
+
+     try
+     {
+         DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+         con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gcet","root","");
+         pst = con.prepareStatement("select * from login where username=? and password=?");
+         pst.setString(1,user);
+         pst.setString(2,word);
+         rs= pst.executeQuery();
+
+         if(rs.next())
+             out.println("Welcome,"+user);
+         else
+             out.println("Sorry,you are not an authorized user");
+         
+         pst.close();
+         rs.close();
+         con.close();
+     }
+     catch(Exception e) { 
+             
+     } 
+  }
+}
+
+
+web.xml
+<web-app>
+  <servlet>
+     <servlet-name>Validate</servlet-name>
+     <servlet-class>Validate</servlet-class>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>Validate</servlet-name>
+     <url-pattern>/Validate</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+     <welcome-file>form.html</welcome-file>
+  </welcome-file-list>
+</web-app>
+
+
+
+
+
+sql
+CREATE TABLE login (
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL
+);
+INSERT INTO login (username, password) VALUES 
+('alice', 'wonderland123'),
+('bob', 'builder321'),
+('charlie', 'choco999');
+
+
+
+
+
+
+
+
+
+
+
+
+
+b)
+validate.html
+<html>
+<body>
+<form action="Validate">
+  USER NAME:<input type="text" name="t1"/><br>
+  PASSWORD:<input type="password" name="t2"/><br>
+  <input type="submit" value="Login"/>
+</form>
+</body>
+</html>
+
+
+Validate.java
+import java.io.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class Validate extends HttpServlet 
+{
+	protected void doGet(HttpServletRequest request, HttpServletResponse  response) throws ServletException, IOException 
+        {
+	   PrintWriter out=response.getWriter();
+	   boolean flag=false;
+	
+           String u=request.getParameter("t1");
+	   String p=request.getParameter("t2");
+	
+           ServletConfig cg=getServletConfig();
+
+	   Enumeration e=cg.getInitParameterNames();
+	   while(e.hasMoreElements())
+	   {
+		   String u1=(String)e.nextElement();
+		   String p1=cg.getInitParameter(u1);
+		   if( u.equals(u1) && p.equals(p1))
+		   {
+			   flag=true;
+			   break;
+		   }
+          }
+	  
+          if(flag==true)
+		  out.println("Hello,"+ u);
+	  else
+		  out.println("you are not an Authorized user"); 
+
+          out.close(); 
+       }
+}
+
+web.xml
+<web-app>
+<servlet>
+   <servlet-name>Validate</servlet-name>
+   <servlet-class>Validate</servlet-class>
+   <init-param>
+      <param-name>user1</param-name>
+       <param-value>pwd1</param-value>
+   </init-param>
+   <init-param>
+      <param-name>user2</param-name>
+       <param-value>pwd2</param-value>
+   </init-param>
+   <init-param>
+      <param-name>user3</param-name>
+       <param-value>pwd3</param-value>
+   </init-param>
+</servlet>
+<servlet-mapping>
+  <servlet-name>Validate</servlet-name>
+  <url-pattern>/Validate</url-pattern>
+</servlet-mapping>
+</web-app>
