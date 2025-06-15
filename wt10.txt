@@ -1,0 +1,124 @@
+ex1.html
+<html>
+<body>
+<form action="ex1.php" method="post">
+ENTER USER NAME: <input type="text" name="t1"/><br>
+ENTER PASSWORD:<input type="password" name="t2"/><br>
+<input type="submit" value="login"/>
+</form>
+</body>
+</html>
+
+
+
+ex1.php
+<?php
+$servername = "localhost:3306";
+$username = "root";
+$password = "";
+$dbname = "gcet";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+
+if($conn->connect_error) 
+{
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$stmt = $conn->prepare("SELECT * FROM login WHERE username=? and password=?");
+
+$stmt->bind_param("ss", $first, $last);
+
+$first =trim($_POST['t1']);
+$last = trim($_POST['t2']);
+
+$stmt->execute();
+
+$stmt->bind_result($u,$p);
+
+if($stmt->fetch()==false)
+   echo "sorry you are not an authorized user";
+else 
+   header("location:ex2.php");
+
+$stmt->close();
+$conn->close();
+
+?>
+
+
+
+
+
+
+ex2.php
+<?php
+	echo "Hello,Welcome to GCET";
+?>
+
+
+
+
+
+
+sql
+CREATE TABLE login (
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL
+);
+INSERT INTO login (username, password) VALUES 
+('alice', 'wonderland123'),
+('bob', 'builder321'),
+('charlie', 'choco999');
+
+
+
+
+
+
+
+
+b)
+calc.html
+<html>
+<body>
+<form action="calc.php">
+Enter First operand:<input type="text" name="t1"><br>
+Enter Second operand:<input type="text" name="t2"><br>
+Enter the operator:<input type="text" name="t3"><br>
+<input type="submit" value="Evaluate"> 
+</form>
+</body>
+</html>
+
+
+
+
+
+calc.php
+<?php
+$x=trim($_REQUEST['t1']);
+$y=trim($_REQUEST['t2']);
+$op=trim($_REQUEST['t3']);
+
+switch($op)
+{
+case "+": $result=$x+$y;
+            break;
+case "-": $result=$x-$y;
+            break;
+case "*": $result=$x*$y;
+            break;
+case "/": $result=$x/$y;
+            break;
+}
+echo "RESULT=".$result;
+?>
+
+
+
+
+
+
+
