@@ -1,0 +1,84 @@
+form.html
+<html>
+    <head>
+        <title>PHP Registration Validation</title>
+    </head>
+    <body>
+        <form action="validate.php" method="POST">
+            Enter Username: <input type="text" name="uname"><br>
+            Enter Password: <input type="text" name="password"><br>
+            Enter Email: <input type="text" name="email"><br>
+            Enter Phone Number: <input type="text" name="phone"><br>
+            <input type="submit" value="Submit" name = "submit">
+        </form>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+validate.php
+<?php
+ if(isSet($_POST['submit']))
+ {
+    $uname = trim($_POST['uname']);
+    $password = trim($_POST['password']);
+    $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
+
+    $flag = 1;
+    if(!$uname){
+      echo "Username is not entered<br>";
+    $flag = 0;
+    }
+    else if (ctype_alpha($uname)==0){
+      echo "Username contains numeric values<br>";
+        $flag = 0;
+    }
+    else if(strlen($uname)<6)
+    {
+        echo "Username should have minimum 6 characters<br>";
+        $flag = 0;
+    }
+
+    if(!$password){
+      echo "Password not entered<br>";
+      $flag = 0;
+    }
+    else if(strlen($password)<6)
+    {
+        echo "Password should have minimum 6 characters<br>";
+        $flag = 0;
+    }
+    if(!$email){
+      echo "Email not entered<br>";
+      $flag = 0;
+    }
+    else if(!filter_var($email,FILTER_VALIDATE_EMAIL))
+    {
+        echo "Email is not valid<br>";
+        $flag = 0;
+    }
+    if(!$phone){
+      echo "Phone number not entered<br>";
+      $flag = 0;
+    }
+    else if(ctype_digit($phone)==0)
+    {
+        echo "Phone number should contain only digits<br>";
+        $flag = 0;
+    }
+    else if(strlen($phone)<10 || strlen($phone)>10)
+    {
+        echo "Phone number should have exactly 10 digits<br>";
+        $flag = 0;
+    }
+
+    if($flag)
+      echo "All fields are valid<br>";
+}
+?>
