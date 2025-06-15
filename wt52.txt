@@ -1,0 +1,84 @@
+sax.java
+import javax.xml.parsers.*;
+import org.xml.sax.*;
+import org.xml.sax.helpers.*;
+import java.io.*;
+import java.util.Scanner;
+
+class sax extends HandlerBase {
+    int x=0;
+    static String userId = "";
+   
+
+    public static void main(String args[]) throws Exception {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter User ID (001-010): ");
+        userId = sc.next();
+        sc.close();
+
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        SAXParser sp = spf.newSAXParser();
+
+        sp.parse("users.xml", new sax());
+    }
+
+    public void startElement(String name, AttributeList al) throws SAXException {
+        if ("user".equals(name)) {
+            String id = al.getValue("id");
+            if (id.equals(userId)) {
+                x = 1;
+                System.out.println("\nUser Details:");
+            }
+        }
+    }
+
+    public void endElement(String name) throws SAXException {
+        if ("user".equals(name)) {
+            x = 0;
+        }
+    }
+
+    public void characters(char[] data, int st, int length) throws SAXException {
+        if (x == 1) {
+		int i=st;
+            for (int count=0; count<length; count++) {
+
+                System.out.print(data[i]);
+		i++;
+            }
+            System.out.println();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+users.dtd
+<!ELEMENT users (user+)>
+<!ELEMENT user (name, age, email, instagram)>
+<!ATTLIST user id CDATA #REQUIRED>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT age (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT instagram (#PCDATA)>
+
+
+
+
+
+
+users.xml
+<!ELEMENT users (user+)>
+<!ELEMENT user (name, age, email, instagram)>
+<!ATTLIST user id CDATA #REQUIRED>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT age (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT instagram (#PCDATA)>
