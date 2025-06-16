@@ -1,0 +1,219 @@
+//hamiltonian hackerrank
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int **G, *x, n;
+int found = 0;
+
+void hamiltonian(int k);
+void nextValue(int k);
+
+int main() {
+    int m;
+    scanf("%d %d", &n, &m);
+
+    G = (int **)malloc((n + 1) * sizeof(int *));
+    for (int i = 0; i <= n; i++) {
+        G[i] = (int *)calloc(n + 1, sizeof(int));
+    }
+
+    x = (int *)calloc(n + 1, sizeof(int));
+
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        G[u + 1][v + 1] = 1;
+        G[v + 1][u + 1] = 1;
+    }
+
+    for (int start = 1; start <= n; start++) {
+        memset(x, 0, (n + 1) * sizeof(int));
+        x[1] = start;
+        hamiltonian(2);
+        if (found) {
+            printf("YES\n");
+            return 0;
+        }
+    }
+
+    printf("NO\n");
+
+    // Free memory
+    for (int i = 0; i <= n; i++) {
+        free(G[i]);
+    }
+    free(G);
+    free(x);
+
+    return 0;
+}
+
+void hamiltonian(int k) {
+    do {
+        nextValue(k);
+        if (x[k] == 0)
+            return;
+        if (k == n) {
+            found = 1;
+            return;
+        } else {
+            hamiltonian(k + 1);
+        }
+    } while (!found);
+}
+
+void nextValue(int k) {
+    do {
+        x[k] = (x[k] + 1) % (n + 1);
+        if (x[k] == 0)
+            return;
+
+        if (G[x[k - 1]][x[k]] == 1) {
+            int j;
+            for (j = 1; j < k; j++) {
+                if (x[j] == x[k])
+                    break;
+            }
+            if (j == k) return;
+        }
+    } while (1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//online compiler
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int **G, *x, n;
+int found = 0;
+
+void hamiltonian(int k);
+void nextValue(int k);
+
+int main() {
+    int m;
+    printf("Enter number of vertices and edges:\n");
+    scanf("%d %d", &n, &m);
+
+    G = (int **)malloc((n + 1) * sizeof(int *));
+    for (int i = 0; i <= n; i++) {
+        G[i] = (int *)calloc(n + 1, sizeof(int));
+    }
+
+    x = (int *)calloc(n + 1, sizeof(int));
+
+    printf("Enter edges (u v):\n");
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        G[u + 1][v + 1] = 1;
+        G[v + 1][u + 1] = 1;
+    }
+
+    for (int start = 1; start <= n; start++) {
+        printf("\nTrying path starting at node %d\n", start);
+        memset(x, 0, (n + 1) * sizeof(int));
+        x[1] = start;
+        hamiltonian(2);
+        if (found) {
+            printf("Hamiltonian Path Found: ");
+            for (int i = 1; i <= n; i++) {
+                printf("%d ", x[i] - 1); // adjust for 0-indexed display
+            }
+            printf("\nResult: YES\n");
+            return 0;
+        }
+    }
+
+    printf("Result: NO\n");
+
+    // Free memory
+    for (int i = 0; i <= n; i++) {
+        free(G[i]);
+    }
+    free(G);
+    free(x);
+
+    return 0;
+}
+
+void hamiltonian(int k) {
+    do {
+        nextValue(k);
+        if (x[k] == 0) {
+            printf("Backtracking from position %d\n", k);
+            return;
+        }
+        printf("Placed %d at position %d\n", x[k] - 1, k);
+
+        if (k == n) {
+            found = 1;
+            return;
+        } else {
+            hamiltonian(k + 1);
+        }
+    } while (!found);
+}
+
+void nextValue(int k) {
+    do {
+        x[k] = (x[k] + 1) % (n + 1);
+        if (x[k] == 0)
+            return;
+
+        printf("Trying to place vertex %d at position %d\n", x[k] - 1, k);
+
+        if (G[x[k - 1]][x[k]] == 1) {
+            int j;
+            for (j = 1; j < k; j++) {
+                if (x[j] == x[k]) {
+                    printf("Vertex %d already used. Skipping...\n", x[k] - 1);
+                    break;
+                }
+            }
+            if (j == k) {
+                printf("Vertex %d placed at position %d\n", x[k] - 1, k);
+                return;
+            }
+        } else {
+            printf("No edge between %d and %d. Skipping...\n", x[k - 1] - 1, x[k] - 1);
+        }
+    } while (1);
+}
+
+
+
+
+
+
+Enter number of vertices and edges:
+4 4
+Enter edges (u v):
+0 1
+1 2
+2 3
+3 0
+  u will get ....
