@@ -55,3 +55,87 @@ int prims(int n, int edges_rows, int edges_columns, int** edges, int start) {
 
 //online compiler
 
+
+#include <stdio.h>
+#define INF 99999
+
+int main() {
+    int n, e;
+    scanf("%d %d", &n, &e);
+
+    int cost[301][301];
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            cost[i][j] = INF;
+
+    for (int i = 0; i < e; i++) {
+        int u, v, w;
+        scanf("%d %d %d", &u, &v, &w);
+        if (w < cost[u][v])
+            cost[u][v] = cost[v][u] = w;
+    }
+
+    int start;
+    scanf("%d", &start);
+
+    int near[301], t[301][2];
+    int min = INF, u, v;
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (i != j && cost[i][j] < min) {
+                min = cost[i][j];
+                u = i;
+                v = j;
+            }
+        }
+    }
+
+    t[1][0] = u;
+    t[1][1] = v;
+    int mincost = cost[u][v];
+    for (int i = 1; i <= n; i++) {
+        if (cost[i][v] < cost[i][u])
+            near[i] = v;
+        else
+            near[i] = u;
+    }
+    near[u] = near[v] = 0;
+
+    for (int i = 2; i <= n - 1; i++) {
+        int min = INF, k;
+        for (int j = 1; j <= n; j++) {
+            if (near[j] != 0 && cost[j][near[j]] < min) {
+                min = cost[j][near[j]];
+                k = j;
+            }
+        }
+        t[i][0] = k;
+        t[i][1] = near[k];
+        mincost += cost[k][near[k]];
+        near[k] = 0;
+        for (int j = 1; j <= n; j++) {
+            if (near[j] != 0 && cost[j][near[j]] > cost[j][k])
+                near[j] = k;
+        }
+    }
+
+    printf("%d\n", mincost);
+    return 0;
+}
+
+
+
+input:
+5 6
+1 2 3
+1 3 4
+4 2 6
+5 2 2
+2 3 5
+3 5 7
+1
+
+
+output:
+15
