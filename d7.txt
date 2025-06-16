@@ -91,3 +91,108 @@ Maximum value that can be taken in knapsack: 13
 
 
 === Code Execution Successful ===
+
+
+
+
+
+
+
+
+
+//sandhya
+import java.io.*;
+import java.util.*;
+
+class PW {
+    int p, w;
+    PW(int p, int w) {
+        this.p = p;
+        this.w = w;
+    }
+}
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt(); // number of items
+        int m = sc.nextInt(); // knapsack capacity
+
+        int[] p = new int[n + 1]; // profits
+        int[] w = new int[n + 1]; // weights
+
+        for (int i = 1; i <= n; i++)
+            p[i] = sc.nextInt();
+        for (int i = 1; i <= n; i++)
+            w[i] = sc.nextInt();
+
+        DKnap(p, w, n, m);
+    }
+
+    static void DKnap(int[] p, int[] w, int n, int m) {
+        PW[] pair = new PW[10000];
+        int[] b = new int[n + 2];
+        int t, h, next;
+        b[0] = 1;
+        pair[1] = new PW(0, 0);
+        t = 1;
+        h = 1;
+        b[1] = next = 2;
+
+        for (int i = 1; i <= n; i++) {
+            int k = t;
+            int pp, ww;
+            int u = largest(pair, w, t, h, i, m);
+            for (int j = t; j <= u; j++) {
+                pp = pair[j].p + p[i];
+                ww = pair[j].w + w[i];
+
+                while ((k <= h) && pair[k].w <= ww) {
+                    pair[next] = new PW(pair[k].p, pair[k].w);
+                    next++;
+                    k++;
+                }
+
+                if ((k <= h) && pair[k].w == ww) {
+                    if (pp < pair[k].p)
+                        pp = pair[k].p;
+                    k++;
+                }
+
+                if ((next == 2) || (pair[next - 1] != null && pp > pair[next - 1].p)) {
+                    pair[next] = new PW(pp, ww);
+                    next++;
+                }
+                while ((k <= h) && (pair[next - 1] != null) && pair[k].p <= pair[next - 1].p) {
+                    k++;
+                }
+            }
+
+            while (k <= h) {
+                pair[next] = new PW(pair[k].p, pair[k].w);
+                next++;
+                k++;
+            }
+
+            t = h + 1;
+            h = next - 1;
+            b[i + 1] = next;
+        }
+
+        int max = 0;
+        for (int j = b[n]; j < b[n + 1]; j++) {
+            if (pair[j] != null && pair[j].w <= m && pair[j].p > max)
+                max = pair[j].p;
+        }
+
+        System.out.println(max);
+    }
+
+    static int largest(PW[] pair, int[] w, int t, int h, int i, int m) {
+        for (int j = h; j >= t; j--) {
+            if (pair[j] != null && pair[j].w + w[i] <= m)
+                return j;
+        }
+        return t - 1;
+    }
+}
