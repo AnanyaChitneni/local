@@ -1,0 +1,162 @@
+//kruskals hackerrank
+#include <stdio.h>
+
+int find(int parent[], int i) {
+    while (parent[i] != -1)
+        i = parent[i];
+    return i;
+}
+
+void unionSets(int parent[], int x, int y) {
+    parent[y] = x;
+}
+
+int kruskal(int n, int cost[100][100]) {
+    int parent[100];
+    for (int i = 0; i < n; i++)
+        parent[i] = -1;
+
+    int mincost = 0;
+    int edges = 0;
+
+    while (edges < n - 1) {
+        int min = 99999, u = -1, v = -1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cost[i][j] && cost[i][j] < min) {
+                    min = cost[i][j];
+                    u = i;
+                    v = j;
+                }
+            }
+        }
+
+        if (u == -1 || v == -1)
+            break;
+
+        int set_u = find(parent, u);
+        int set_v = find(parent, v);
+
+        if (set_u != set_v) {
+            mincost += cost[u][v];
+            unionSets(parent, set_u, set_v);
+            edges++;
+        }
+
+        cost[u][v] = cost[v][u] = 0;
+    }
+
+    return mincost;
+}
+
+int main() {
+    int n;
+    int cost[100][100];
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            scanf("%d", &cost[i][j]);
+
+    int result = kruskal(n, cost);
+    printf("%d\n", result);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+//online compiler
+#include <stdio.h>
+
+int find(int parent[], int i) {
+    while (parent[i] != -1)
+        i = parent[i];
+    return i;
+}
+
+void unionSets(int parent[], int x, int y) {
+    parent[y] = x;
+}
+
+int main() {
+    int n, cost[100][100];
+    
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+    
+    printf("Enter the cost adjacency matrix (%d x %d):\n", n, n);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &cost[i][j]);
+        }
+    }
+
+    int parent[100];
+    for (int i = 0; i < n; i++)
+        parent[i] = -1;
+
+    int mincost = 0;
+    int edges = 0;
+
+    while (edges < n - 1) {
+        int min = 99999, u = -1, v = -1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cost[i][j] && cost[i][j] < min) {
+                    min = cost[i][j];
+                    u = i;
+                    v = j;
+                }
+            }
+        }
+
+        if (u == -1 || v == -1)
+            break;
+
+        int set_u = find(parent, u);
+        int set_v = find(parent, v);
+
+        if (set_u != set_v) {
+            printf("Edge selected: (%d, %d) with cost %d\n", u + 1, v + 1, cost[u][v]);
+            mincost += cost[u][v];
+            unionSets(parent, set_u, set_v);
+            edges++;
+        }
+
+        cost[u][v] = cost[v][u] = 0;
+    }
+
+    printf("Minimum Cost of Spanning Tree: %d\n", mincost);
+    return 0;
+}
+
+
+
+
+
+input:
+Enter the number of vertices: 6
+Enter the cost adjacency matrix (6 x 6):
+0 4 4 0 0 0
+4 0 2 0 0 0
+4 2 0 3 2 4
+0 0 3 0 0 3
+0 0 2 0 0 3
+0 0 4 3 3 0
+
+
+output:
+Edge selected: (2, 3) with cost 2
+Edge selected: (3, 5) with cost 2
+Edge selected: (3, 4) with cost 3
+Edge selected: (4, 6) with cost 3
+Edge selected: (1, 2) with cost 4
+Minimum Cost of Spanning Tree: 14
