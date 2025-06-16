@@ -1,0 +1,267 @@
+Prims code
+
+INF = 9999999
+
+n, m = map(int, input().split())
+
+# Initialize adjacency matrix
+cost = [[INF for _ in range(n)] for _ in range(n)]
+
+# Read edges
+for _ in range(m):
+    u, v, w = map(int, input().split())
+    cost[u - 1][v - 1] = w
+    cost[v - 1][u - 1] = w  # undirected graph
+
+# Read starting vertex
+start = int(input()) - 1
+
+# Prim's Algorithm
+selected = [0] * n
+selected[start] = 1
+edges = 0
+mincost = 0
+
+while edges < n - 1:
+    minimum = INF
+    x = y = 0
+
+    for i in range(n):
+        if selected[i]:
+            for j in range(n):
+                if not selected[j] and cost[i][j] < minimum:
+                    minimum = cost[i][j]
+                    x, y = i, j
+
+    mincost += cost[x][y]
+    selected[y] = 1
+    edges += 1
+
+print(mincost)
+-----------------------------------------------------------------------------------------------------------------------
+Kruskal :
+
+def find(p, i):
+    while p[i] != i:
+        i = p[i]
+    return i
+
+def union(p, a, b):
+    p[a] = b
+
+n, m = map(int, input().split())
+edges = []
+for _ in range(m):
+    u, v, w = map(int, input().split())
+    edges.append((w, u - 1, v - 1))
+
+edges.sort()
+p = [i for i in range(n)]
+cost = 0
+count = 0
+
+for w, u, v in edges:
+    pu = find(p, u)
+    pv = find(p, v)
+    if pu != pv:
+        union(p, pu, pv)
+        cost += w
+        count += 1
+    if count == n - 1:
+        break
+
+print(cost if count == n - 1 else "No spanning tree")
+-----------------------------------------------------------------------------------------------------------------------
+Job sequence:
+
+n = int(input())
+
+# Input profits and deadlines
+p = list(map(int, input().split()))
+d = list(map(int, input().split()))
+
+
+jobs = list(range(n))
+
+
+jobs.sort(key=lambda x: p[x], reverse=True)
+
+J = [0] * (n + 1)  # Job sequence
+k = 1
+J[1] = jobs[0]
+
+for i in range(1, n):
+    r = k
+    while r >= 1 and d[J[r]] > d[jobs[i]] and d[J[r]] != r:
+        r -= 1
+    if d[J[r]] <= d[jobs[i]] and d[jobs[i]] > r:
+        q = k
+        while q >= r + 1:
+            J[q + 1] = J[q]
+            q -= 1
+        J[r + 1] = jobs[i]
+        k += 1
+
+
+profit = 0
+for i in range(1, k + 1):
+    profit += p[J[i]]
+
+print(profit)
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Dijkstra's :
+
+
+def dijkstra(n, edges, src):
+   
+    INF = 999999
+    cost = [[INF] * (n + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        cost[i][i] = 0
+
+    
+    for u, v, w in edges:
+        cost[u][v] = w
+        cost[v][u] = w
+
+    visited = [False] * (n + 1)
+    dist = [INF] * (n + 1)
+    dist[src] = 0
+
+    for _ in range(n):
+        
+        min_val = INF
+        u = -1
+        for i in range(1, n + 1):
+            if not visited[i] and dist[i] < min_val:
+                min_val = dist[i]
+                u = i
+        if u == -1:
+            break
+        visited[u] = True
+
+        
+        for v in range(1, n + 1):
+            if not visited[v] and dist[v] > dist[u] + cost[u][v]:
+                dist[v] = dist[u] + cost[u][v]
+
+    return dist
+
+T = int(input())
+for _ in range(T):
+    n, e = map(int, input().split())
+    edges = []
+    for _ in range(e):
+        u, v, w = map(int, input().split())
+        edges.append((u, v, w))
+    src = int(input())
+    result = dijkstra(n, edges, src)
+    
+    
+    output = []
+    for i in range(1, n + 1):
+        if i != src:
+            output.append(str(result[i]))
+    print(' '.join(output))
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+Hamiltonian :
+
+
+def is_valid(v, pos, path, graph):
+    if graph[path[pos - 1]][v] == 0 or v in path:
+        return False
+    return True
+
+def Hamiltonian(pos, path, graph, n):
+    if pos == n:
+        return graph[path[pos - 1]][path[0]] == 1  
+
+    for i in range(1, n): 
+        if is_valid(i, pos, path, graph):
+            path[pos] = i
+            if Hamiltonian(pos + 1, path, graph, n):
+                return True
+            path[pos] = -1  
+    return False
+
+
+n, m = map(int, input().split()) 
+graph = [[0] * n for _ in range(n)]  
+
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    graph[u][v] = graph[v][u] = 1 
+
+path = [-1] * n
+path[0] = 0  
+
+
+if Hamiltonian(1, path, graph, n):
+    print("YES")
+else:
+    print("NO")
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+OBST code:
+
+
+def optimal_bst(p, q, n):
+    c = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+    w = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+    r = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+
+    for i in range(n):
+        w[i][i] = q[i]
+        c[i][i] = 0
+        r[i][i] = 0
+
+        w[i][i + 1] = q[i] + q[i + 1] + p[i]
+        c[i][i + 1] = w[i][i + 1]
+        r[i][i + 1] = i
+
+    w[n][n] = q[n]
+    c[n][n] = 0
+    r[n][n] = 0
+
+    for m in range(2, n + 1):
+        for i in range(n - m + 1):
+            j = i + m
+            w[i][j] = w[i][j - 1] + p[j - 1] + q[j]
+            min_cost = float('inf')
+            left = r[i][j - 1] if r[i][j - 1] != 0 else i
+            right = r[i + 1][j] if r[i + 1][j] != 0 else j - 1
+
+            for k in range(left, right + 1):
+                cost = c[i][k] + c[k + 1][j]
+                if cost < min_cost:
+                    min_cost = cost
+                    r[i][j] = k
+
+            c[i][j] = w[i][j] + min_cost
+
+    return c[0][n]
+
+
+
+n = int(input())
+p = list(map(int, input().split()))     
+q = list(map(int, input().split()))     
+
+print(optimal_bst(p, q, n))
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+
