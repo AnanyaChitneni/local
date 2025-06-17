@@ -196,3 +196,46 @@ public class Solution {
         return t - 1;
     }
 }
+
+
+
+
+//easyy
+#include <stdio.h>
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int main() {
+    int n, m;
+    printf("Enter number of objects: ");
+    scanf("%d", &n);
+    printf("Enter capacity of knapsack: ");
+    scanf("%d", &m);
+
+    int p[n], w[n];
+
+    printf("Enter profits of the objects:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &p[i]);
+
+    printf("Enter weights of the objects:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &w[i]);
+
+    int dp[m + 1];
+    for (int i = 0; i <= m; i++)
+        dp[i] = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = m; j >= w[i]; j--) {
+            dp[j] = max(dp[j], dp[j - w[i]] + p[i]);
+        }
+    }
+
+    printf("Maximum profit that can be taken in knapsack: %d\n", dp[m]);
+
+    return 0;
+}
+
