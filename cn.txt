@@ -267,3 +267,213 @@ Stuffed data at intermediate site is:
  |01111110|1111100|01111110|
 -----------------------------------
 Destuffed BIT is: 111110
+
+
+
+
+
+
+
+
+//stopn wait
+// package prg1;
+
+import java.io.*;
+import java.net.*;
+
+public class myServer{
+    public static void main(String args[]) {
+        try {
+            ServerSocket ss = new ServerSocket(115);
+            Socket s = ss.accept();
+
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+            int p = Integer.parseInt(dis.readUTF());
+
+            for (int i = 0; i < p; i++) {
+                String str[] = new String[p];
+                str[i] = (String)dis.readUTF();
+
+                System.out.println("Frame " + i + " is " + str[i]);
+
+                dos.writeUTF("ACK");
+            }
+            dos.flush();
+
+            dos.close();
+            ss.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+
+// package prg1;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class myClient{
+    public static void main(String args[]) {
+        try {
+            Socket s = new Socket("localhost",115);
+
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Enter the number of frames to be sent:");
+            int n = sc.nextInt();
+
+            String k = Integer.toString(n);
+            dout.writeUTF(k);
+
+            String ack[] = new String[n]; 
+
+            for (int i = 0; i < n; i++) {
+                System.out.println("Enter Frame " + i + ":");
+                String fs = sc.next();
+
+                dout.writeUTF(fs);
+                ack[i] = (String) dis.readUTF();
+                System.out.println(ack[i]);
+            }
+
+            dout.flush();
+            dout.close();
+            s.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+
+D:\cn\prg1>java myClient
+Enter the number of frames to be sent:
+4
+Enter Frame 0:
+1
+ACK
+Enter Frame 1:
+2
+ACK
+Enter Frame 2:
+3
+ACK
+Enter Frame 3:
+4
+ACK
+
+
+
+
+
+
+
+//gobacknslidingwindow
+//package prg2;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class Client {
+    public static void main(String args[]) {
+        try {
+            Socket s = new Socket("localhost", 120);
+
+            DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Enter the number of frames to be sent:");
+            int n = sc.nextInt();
+
+            String k = Integer.toString(n);
+            dout.writeUTF(k);
+
+            String ack[] = new String[n];
+
+            System.out.println("Enter Send Window size:");
+            int sendwindow = sc.nextInt();
+
+            for (int i = 0,j=0; i < n/sendwindow; i++) {
+                while (j < sendwindow) {
+                    System.out.println("Enter Frame " + j + ":");
+                    String fs = sc.next();
+                    dout.writeUTF(fs);
+
+                    ack[i] = (String) dis.readUTF();
+                    System.out.println(ack[i]);
+                    j++;
+                }j=0;
+            }
+
+            dout.flush();
+            dout.close();
+            s.close();
+            sc.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+
+
+//package prg2;
+
+import java.io.*;
+import java.net.*;
+
+public class Sender {
+    public static void main(String args[]) {
+        try {
+            ServerSocket ss = new ServerSocket(120);
+            Socket s = ss.accept();
+
+            DataInputStream dis = new DataInputStream(s.getInputStream());
+            DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+            int p = Integer.parseInt(dis.readUTF());
+
+           // int receivewindow = 1;
+            String str[] = new String[p];
+
+            for (int i = 0; i < p; i++) {
+                str[i] = (String) dis.readUTF();
+                System.out.println("Frame " + i + " is " + str[i]);
+                System.out.println("Ack Sent");
+                dos.writeUTF("ACK");
+            }
+
+            ss.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+Enter the number of frames to be sent:
+4
+Enter Send Window size:
+2
+Enter Frame 0:
+1
+ACK
+Enter Frame 1:
+2
+ACK
+Enter Frame 0:
+3
+ACK
+Enter Frame 1:
+4
+ACK
