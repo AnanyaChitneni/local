@@ -406,7 +406,7 @@ public class caclient{
         }
     }
 
-    Boolean isidle() {
+    Boolean isidle(hi) {
         try {
             Socket soc = new Socket("localhost",5000);
 
